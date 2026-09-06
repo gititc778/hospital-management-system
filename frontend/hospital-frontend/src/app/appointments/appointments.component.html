@@ -1,0 +1,59 @@
+<h2>Appointments</h2>
+
+<form (ngSubmit)="addAppointment()" class="form">
+
+  <mat-form-field appearance="outline">
+    <mat-label>Patient ID</mat-label>
+    <input matInput
+           type="number"
+           [(ngModel)]="patientId"
+           name="patientId"
+           required>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Doctor</mat-label>
+    <input matInput
+           [(ngModel)]="doctor"
+           name="doctor"
+           required>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Date</mat-label>
+    <input matInput
+           type="date"
+           [(ngModel)]="date"
+           name="date"
+           required>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Time</mat-label>
+    <input matInput
+           type="time"
+           [(ngModel)]="time"
+           name="time"
+           required>
+  </mat-form-field>
+
+  <button mat-raised-button
+          color="accent"
+          type="submit">
+    Add Appointment
+  </button>
+
+</form>
+
+<div class="cards">
+  <mat-card *ngFor="let appointment of appointments" class="appointment-card">
+    <mat-card-title>
+      Patient ID: {{ appointment.patient_id }}
+    </mat-card-title>
+    <mat-card-content>
+      Doctor: {{ appointment.doctor }} <br>
+      Date: {{ appointment.date }} <br>
+      Time: {{ appointment.time }}
+    </mat-card-content>
+  </mat-card>
+</div>
