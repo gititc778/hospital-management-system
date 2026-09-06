@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: appointment-api
+
 spec:
   replicas: 1
 
@@ -17,7 +18,8 @@ spec:
     spec:
       containers:
         - name: appointment-api
-          image: dockeritc778/appointment-api:v1.1.0
+          image: dockeritc778/appointment-api:v1.1.2
+
           ports:
             - containerPort: 3001
 
@@ -28,6 +30,26 @@ spec:
             limits:
               cpu: "500m"
               memory: "512Mi"
+
+          # Checks if the Flask application is alive
+          livenessProbe:
+            httpGet:
+              path: /liveness
+              port: 3001
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+          # Checks if Flask can connect to MySQL
+          readinessProbe:
+            httpGet:
+              path: /readiness
+              port: 3001
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
 
           envFrom:
             - configMapRef:

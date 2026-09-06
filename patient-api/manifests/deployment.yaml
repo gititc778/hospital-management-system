@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: patient-api
+
 spec:
   replicas: 1
 
@@ -17,7 +18,7 @@ spec:
     spec:
       containers:
         - name: patient-api
-          image: dockeritc778/patient-api:v1.1.0
+          image: dockeritc778/patient-api:v1.1.2
 
           ports:
             - containerPort: 3000
@@ -29,6 +30,26 @@ spec:
             limits:
               cpu: "500m"
               memory: "512Mi"
+
+          # Checks if the Flask application is alive
+          livenessProbe:
+            httpGet:
+              path: /liveness
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+          # Checks if the Flask application can reach MySQL
+          readinessProbe:
+            httpGet:
+              path: /readiness
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
 
           envFrom:
             - configMapRef:

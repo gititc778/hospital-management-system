@@ -23,6 +23,34 @@ def get_db_connection():
     return MySQLdb.connect(**DB_CONFIG)
 
 
+# Liveness probe
+# Checks whether the Flask application is running
+@app.route('/liveness', methods=['GET'])
+def liveness():
+    return jsonify({
+        'status': 'alive'
+    }), 200
+
+
+# Readiness probe
+# Checks whether the application can connect to MySQL
+@app.route('/readiness', methods=['GET'])
+def readiness():
+    try:
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT 1")
+
+        return jsonify({
+            'status': 'ready'
+        }), 200
+
+    except Exception:
+        return jsonify({
+            'status': 'not ready'
+        }), 503
+
+
 # Create patients table if it doesn't exist
 with get_db_connection() as conn:
     cursor = conn.cursor()
@@ -80,6 +108,7 @@ def add_patient():
     })
 
 
+# Start Flask application
 if __name__ == '__main__':
     app.run(
         host='0.0.0.0',

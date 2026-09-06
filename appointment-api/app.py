@@ -7,7 +7,8 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-# MySQL configuration comes from environment variables
+# MySQL configuration
+# Values come from Kubernetes ConfigMap and Secret
 DB_CONFIG = {
     'host': os.getenv('DB_HOST'),
     'user': os.getenv('DB_USER'),
@@ -17,13 +18,43 @@ DB_CONFIG = {
 }
 
 
+# Helper function to get DB connection
 def get_db_connection():
     return MySQLdb.connect(**DB_CONFIG)
+
+
+# Liveness probe
+# Checks whether the Flask application is running
+@app.route('/liveness', methods=['GET'])
+def liveness():
+    return jsonify({
+        'status': 'alive'
+    }), 200
+
+
+# Readiness probe
+# Checks whether the application can connect to MySQL
+@app.route('/readiness', methods=['GET'])
+def readiness():
+    try:
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT 1")
+
+        return jsonify({
+            'status': 'ready'
+        }), 200
+
+    except Exception:
+        return jsonify({
+            'status': 'not ready'
+        }), 503
 
 
 # Create appointments table
 with get_db_connection() as conn:
     cursor = conn.cursor()
+
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS appointments (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -33,6 +64,7 @@ with get_db_connection() as conn:
             time TIME
         )
     """)
+
     conn.commit()
 
 
@@ -94,5 +126,9 @@ def add_appointment():
     })
 
 
+# Start Flask application
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=3001)
+    app.run(
+        host='0.0.0.0',
+        port=3001
+    )
