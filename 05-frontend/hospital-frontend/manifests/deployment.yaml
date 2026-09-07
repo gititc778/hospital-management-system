@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: hospital-frontend
-          image: dockeritc778/hpm:v1.1.2
+          image: dockeritc778/hpm:v1.1.3
 
           ports:
             - containerPort: 80

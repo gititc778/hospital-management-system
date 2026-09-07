@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: patient-api
-          image: dockeritc778/patient-api:v1.1.2
+          image: dockeritc778/patient-api:v1.1.3
 
           ports:
             - containerPort: 3000
