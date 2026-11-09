@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: appointment-api
 spec:
-  type: ClusterIP
+  type: NodePort
 
   selector:
     app: appointment-api

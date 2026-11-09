@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: appointment-api
-          image: dockeritc778/appointment-api:v1.1.2
+          image: dockeritc778/appointment-api:v1.1.4
 
           ports:
             - containerPort: 3001

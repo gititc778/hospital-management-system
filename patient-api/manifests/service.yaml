@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: patient-api
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: patient-api
   ports:

@@ -1,0 +1,36 @@
+name: patient-api
+replicas: 1
+
+image:
+  repository: dockeritc778/patient-api
+  tag: v1.1.4
+
+containerPort: 3000
+
+service:
+  type: NodePort
+  port: 3000
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+# DB settings. Set create: false and name: hpm-config / hpm-secret
+# to use the shared resources from config/ instead.
+configMap:
+  create: true
+  name: patient-api-config
+  data:
+    DB_HOST: mysql
+    DB_NAME: hospital
+
+secret:
+  create: true
+  name: patient-api-secret
+  data:
+    DB_USER: user
+    DB_PASSWORD: pass123
