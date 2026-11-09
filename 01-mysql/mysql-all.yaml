@@ -29,7 +29,7 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  storageClassName: standard
+  storageClassName: managed-csi
 ---
 # Source: 04-deploy.yaml
 apiVersion: apps/v1
