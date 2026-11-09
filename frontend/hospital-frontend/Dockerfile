@@ -23,7 +23,13 @@ FROM nginx:alpine
 COPY --from=build /app/dist/hospital-frontend /usr/share/nginx/html
 
 # Copy custom Nginx config for Angular routing
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# The image entrypoint renders templates/ into conf.d/default.conf at startup
+COPY nginx.conf /etc/nginx/templates/default.conf.template
+
+# Sets NGINX_RESOLVER and K8S_DNS_SUFFIX used by the template
+COPY 15-k8s-dns.envsh /docker-entrypoint.d/15-k8s-dns.envsh
+RUN sed -i 's/\r$//' /docker-entrypoint.d/15-k8s-dns.envsh && \
+    chmod +x /docker-entrypoint.d/15-k8s-dns.envsh
 
 # Expose port 80
 EXPOSE 80
